@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <Toolbar class="mb-4">
             <template #start>
-                <Button label="Novo" icon="pi pi-plus" class="p-button-success me-2" @click="abrirNovo" />
+                <Button label="Novo" icon="pi pi-plus" class="p-button-success me-2" @click="openNewDialog" />
                 <Button label="Excuir" icon="pi pi-trash" class="p-button-danger" @click="confirmDeleteSelected"
                     :disabled="!selectedSituacoes || !selectedSituacoes.length" />
             </template>
@@ -25,7 +25,7 @@
             </template>
         </Toolbar>
 
-        <DataTable ref="dt" :value="situacoes" v-model:selection="selectedProducts" dataKey="id" :paginator="true"
+        <DataTable :value="listaSituacoesFitrada" v-model:selection="selectedProducts" dataKey="id" :paginator="true"
             :rows="10"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             :rowsPerPageOptions="[5, 10, 25]"
@@ -35,6 +35,15 @@
             <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
             <Column field="id" header="Id" :sortable="true" style="min-width:12rem"></Column>
             <Column field="nome" header="Nome" :sortable="true" style="min-width:16rem"></Column>
+            <Column field="cor" header="Cor">
+                <template #body="{ data }">
+                    <span
+                        class="situacao-badge"
+                        :style="'background-color: #' + data.cor + ';'"
+                        >{{ data.nome }}</span
+                    >
+                </template></Column
+            >
             <Column field="ativo" header="Ativo">
                 <template #body="{ data }">
                     <i class="pi pi-check-circle ativo" v-if="data.ativo"></i>
@@ -74,7 +83,7 @@
             </div>
 
             <template #footer>
-                <Button label="Cancelar" icon="pi pi-times" class="p-button-text" @click="hideDialog" />
+                <Button label="Cancelar" icon="pi pi-times" class="p-button-text" @click="closeNewDialog" />
                 <Button label="Salvar" icon="pi pi-check" class="p-button-text" @click="salvar" />
             </template>
         </Dialog>
@@ -83,44 +92,53 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import Titulo from '../components/Titulo.vue';
 import api from '../api/ApiInstance';
 
 
 
-const situacoes = reactive([]);
+
 const selectedProducts = reactive([]);
 const selectedSituacoes = reactive([]);
-const filtro = ref('todos');
+
 let situacao = reactive({});
 let submitted = ref(false);
-let situacaoDialog = ref(false);
+
 
 onMounted(async () => {
-    getSituacoes();
+    getAllSituacoes();
 });
 
-const getSituacoes = async () => {
+
+let listaSituacoesFitrada = ref([]);
+let listaSituacoesOriginal = ref([]);
+const getAllSituacoes = async () => {
     const response = await api.get('/situacao');
-    situacoes.push(...response.data);
+    listaSituacoesOriginal.value = response.data;
+    listaSituacoesFitrada.value = listaSituacoesOriginal.value;
 };
 
-const abrirNovo = async () => {
+
+let situacaoDialog = ref(false);
+
+const openNewDialog = async () => {
     situacao = {};
     situacao.ativo = "1";
     submitted.value = false;
     situacaoDialog.value = true;
 };
 
-const hideDialog = async () => {
+const salvar = async () => {
+    console.log('Passou por aqui!');
+}
+
+const closeNewDialog = async () => {
     situacaoDialog.value = false;
     submitted.value = false;
 };
 
-const salvar = async () => {
-    console.log('Passou por aqui!');
-}
+
 
 const confirmDeleteSelected = async () => {
     // // Abre o pop up de deleção de uma unica Situação
@@ -130,5 +148,29 @@ const confirmDeleteSelected = async () => {
     // } // Abre o pop up de delação de varias Situações
     // else this.deleteSituacoesDialog = true;
 };
+
+const filtro = ref('todos');
+
+watch(filtro, () => {
+    filtrar();
+});
+
+const filtrar = () => {
+    switch (filtro.value) {
+        case "todos":            
+            listaSituacoesFitrada.value = listaSituacoesOriginal.value;            
+            break;
+        case "ativos":            
+            listaSituacoesFitrada.value = listaSituacoesOriginal.value.filter(s => s.ativo);
+            break;
+        case "inativos":            
+            listaSituacoesFitrada.value = listaSituacoesOriginal.value.filter(s => !s.ativo);
+            break;
+        default:
+            listaSituacoesFitrada.value = listaSituacoesOriginal.value;     
+            break;
+    }
+};
+
 
 </script>
