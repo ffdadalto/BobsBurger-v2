@@ -168,6 +168,9 @@ const getAllSituacoes = async () => {
 
 let toast = useToast();
 
+
+// *** CADASTRO E EDIÇÃO ***
+
 let situacao = ref({});
 let situacaoDialog = ref(false);
 const editSituacao = (obj) => {
@@ -191,7 +194,6 @@ const closeNewDialog = async () => {
 
 
 const salvar = async () => {
-
     submitted.value = true;
     if (situacao.value.nome.trim() && situacao.value.cor) {
         if (situacao.value.id) {
