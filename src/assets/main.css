@@ -20,7 +20,7 @@
     box-sizing: border-box;
     text-decoration: none;
     margin: 0;
-    padding: 0;    
+    padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -45,11 +45,9 @@ header {
 }
 
 aside {
-    background: linear-gradient(
-        to right,
-        var(--cor-menu-pri),
-        var(--cor-menu-sec)
-    );
+    background: linear-gradient(to right,
+            var(--cor-menu-pri),
+            var(--cor-menu-sec));
     grid-area: menu-lateral;
     width: var(--menu-width);
 }
@@ -73,6 +71,7 @@ footer {
     background-color: var(--cor-rodape);
     grid-area: rodape;
 }
+
 /* Tamanhon do fonte das listas */
 .p-datatable table {
     font-size: 0.8rem;
@@ -98,7 +97,7 @@ footer {
     margin-left: 20px;
 }
 
-.ativo-radio-button-item > label {
+.ativo-radio-button-item>label {
     margin-left: 10px;
 }
 
