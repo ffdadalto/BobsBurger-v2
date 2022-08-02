@@ -1,29 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '@/views/Home.vue'
-import Pedido from '@/views/Pedido.vue'
-import Item from '@/views/Item.vue'
-import Situacao from '@/views/Situacao.vue'
-import Cliente from '@/views/Cliente.vue'
-import FormaPagamento from '@/views/FormaPagamento.vue'
-import Bairro from '@/views/Bairro.vue'
-import Cidade from '@/views/Cidade.vue'
-import Sobre from '@/views/Sobre.vue'
-import Erro404 from '@/views/404.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', name: 'Home', component: Home },
-    { path: '/Pedido', name: 'Pedido', component: Pedido },
-    { path: '/Item', name: 'Item', component: Item },
-    { path: '/Situacao', name: 'Situacao', component: Situacao },
-    { path: '/Cliente', name: 'Cliente', component: Cliente },
-    { path: '/FormaPagamento', name: 'FormaPagamento', component: FormaPagamento },
-    { path: '/Bairro', name: 'Bairro', component: Bairro },
-    { path: '/Cidade', name: 'Cidade', component: Cidade },    
-    { path: '/Sobre', name: 'Sobre', component: Sobre },
-    { path: '/Erro404', name: 'Erro404', component: Erro404 },
+    { path: '/Pedido', name: 'Pedido', component: () => import('@/views/Pedido.vue') },
+    { path: '/Item', name: 'Item', component: () => import('@/views/Item.vue') },
+    { path: '/Situacao', name: 'Situacao', component: () => import('@/views/Situacao.vue') },
+    { path: '/Cliente', name: 'Cliente', component: () => import('@/views/Cliente.vue') },
+    { path: '/FormaPagamento', name: 'FormaPagamento', component: () => import('@/views/FormaPagamento.vue') },
+    { path: '/Bairro', name: 'Bairro', component: () => import('@/views/Bairro.vue') },
+    { path: '/Cidade', name: 'Cidade', component: () => import('@/views/Cidade.vue') },
+    { path: '/Sobre', name: 'Sobre', component: () => import('@/views/Sobre.vue') },
+    { path: '/Erro404', name: 'Erro404', component: () => import('@/views/404.vue') },
   ]
 })
 
