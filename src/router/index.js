@@ -15,7 +15,8 @@ const router = createRouter({
     { path: '/Cidade', name: 'Cidade', component: () => import('@/views/Cidade.vue') },
     { path: '/Sobre', name: 'Sobre', component: () => import('@/views/Sobre.vue') },
     { path: '/Erro404', name: 'Erro404', component: () => import('@/views/404.vue') },
-  ]
+  ],
+  linkActiveClass: 'active'
 })
 
 export default router
