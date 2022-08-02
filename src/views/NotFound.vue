@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="not-found">
+        <div class="my-5 not-found">
             <h1 class="text-center">
                 Pagina não encontrada.
             </h1>
@@ -8,7 +8,7 @@
                 Oops, nós não conseguimos encontrar a pagina. Tente novamente!
             </p>
         </div>
-        <div class="h-50 d-flex justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center my-5">
             <i class="pi pi-ban not-found-icon"></i>
         </div>
         <p class="text-center">

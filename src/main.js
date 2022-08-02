@@ -15,6 +15,8 @@ import 'primeicons/primeicons.css' //icons
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
+import Titulo from '@/components/Titulo.vue';
+
 
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
@@ -35,6 +37,8 @@ app.use(createPinia())
 app.use(router)
 app.use(PrimeVue);
 app.use(ToastService);
+
+app.component('Titulo', Titulo);
 
 app.component('Dialog', Dialog);
 app.component('Button', Button);

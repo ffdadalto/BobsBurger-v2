@@ -27,7 +27,7 @@ import Rodape from '@/components/Rodape.vue'
     </div>
 </template>
 
-<style>
+<style scoped>
 .slide-enter-active,
 .slide-leave-active {
     transition: opacity 0.5s, transform 0.5s;

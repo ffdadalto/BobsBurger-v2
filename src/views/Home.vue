@@ -12,7 +12,6 @@
 
 <script setup>
 import { ref } from 'vue';
-import Titulo from '../components/Titulo.vue';
 
 const displayBasic = ref(false);
 

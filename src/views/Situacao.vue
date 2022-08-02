@@ -145,7 +145,6 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import Titulo from '../components/Titulo.vue';
 import api from '../api/ApiInstance';
 import { useToast } from "primevue/usetoast";
 
