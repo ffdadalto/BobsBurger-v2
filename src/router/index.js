@@ -14,7 +14,7 @@ const router = createRouter({
     { path: '/Bairro', name: 'Bairro', component: () => import('@/views/Bairro.vue') },
     { path: '/Cidade', name: 'Cidade', component: () => import('@/views/Cidade.vue') },
     { path: '/Sobre', name: 'Sobre', component: () => import('@/views/Sobre.vue') },
-    { path: '/Erro404', name: 'Erro404', component: () => import('@/views/404.vue') },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/NotFound.vue') },
   ],
   linkActiveClass: 'active'
 })

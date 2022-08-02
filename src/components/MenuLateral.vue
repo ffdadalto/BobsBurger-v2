@@ -103,7 +103,7 @@ ul {
 
 .active {
     background-color: #416272;
-    text-decoration: underline;
+    /* text-decoration: underline; */
     font-weight: 600;
     color: #ffffff;
 }
