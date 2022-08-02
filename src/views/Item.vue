@@ -1,5 +1,7 @@
 <template>
-    <Titulo msg="Lista de Itens"></Titulo>
+    <div>
+        <Titulo msg="Lista de Itens"></Titulo>
+    </div>
 </template>
 
 <script setup>

@@ -1,5 +1,7 @@
 <template>
-    <Titulo msg="Lista de Bairros"></Titulo>    
+    <div>
+        <Titulo msg="Lista de Bairros"></Titulo>
+    </div>
 </template>
 
 <script setup>

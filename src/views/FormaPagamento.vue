@@ -1,5 +1,7 @@
 <template>
-    <Titulo msg="Lista de Formas de Pagamentos"></Titulo>
+    <div>
+        <Titulo msg="Lista de Formas de Pagamentos"></Titulo>
+    </div>
 </template>
 
 <script setup>

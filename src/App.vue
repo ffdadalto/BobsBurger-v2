@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import Cabecalho from '@/components/Cabecalho.vue'
 import MenuLateral from '@/components/MenuLateral.vue'
 import Rodape from '@/components/Rodape.vue'
@@ -15,7 +15,11 @@ import Rodape from '@/components/Rodape.vue'
             <MenuLateral></MenuLateral>
         </aside>
         <div class="content">
-            <RouterView />
+            <RouterView v-slot="{ Component }">
+                <transition name="slide" mode="out-in">
+                    <component :is="Component" :key="$route.path"></component>
+                </transition>
+            </RouterView>
         </div>
         <footer>
             <Rodape></Rodape>
@@ -23,5 +27,15 @@ import Rodape from '@/components/Rodape.vue'
     </div>
 </template>
 
-<style scoped>
+<style>
+.slide-enter-active,
+.slide-leave-active {
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+    opacity: 0;
+    transform: translateX(30%);
+}
 </style>
