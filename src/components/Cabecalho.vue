@@ -1,8 +1,10 @@
 <template>
     <div class="header">
-        <div class="site-logo">
-            <img src="../assets/logo.png" alt="Burguer" />
-        </div>
+        <router-link :to="{ name: 'Home' }" custom v-slot="{ navigate }">
+            <div class="site-logo" role="link" @click="navigate">
+                <img src="../assets/logo.png" alt="Burguer" />
+            </div>
+        </router-link>
         <div class="site-admin">
             <div class="login">
                 <h4>Login</h4>
@@ -25,6 +27,7 @@
     justify-content: center;
     align-items: center;
     width: 450px;
+    cursor: pointer;
 }
 
 .site-admin {
