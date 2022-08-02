@@ -70,12 +70,12 @@
                         Nenhuma situação encontrada!
                     </div>
                 </div>
-            </template>
+            </template>    
 
             <Dialog v-model:visible="situacaoDialog" :style="{ width: '550px' }" header="Cadastro de Situações"
                 :modal="true" class="p-fluid">
-                <div class="formgrid grid">
-                    <div class="field col-12">
+                <div class="row">
+                    <div class="field col-6">
                         <label>Nome</label>
                         <InputText v-model.trim="situacao.nome" required="true" autofocus :class="{
                             'p-invalid': submitted && !situacao.nome,
@@ -95,7 +95,7 @@
                             <RadioButton id="ativo" name="situacao" :value="true" v-model="situacao.ativo" />
                             <label>Ativo</label>
                         </div>
-                        <div class="field-radiobutton col-4">
+                        <div class="field-radiobutton col-6">
                             <RadioButton id="inativo" name="situacao" :value="false" v-model="situacao.ativo" />
                             <label>Inativo</label>
                         </div>
@@ -107,6 +107,7 @@
                     <Button label="Salvar" icon="pi pi-check" class="p-button-text" @click="salvar" />
                 </template>
             </Dialog>
+
 
             <!-- Pop up deleção de uma unica situação selecionada -->
             <Dialog v-model:visible="deleteSituacaoDialog" :style="{ width: '450px' }" header="Confirmação"
@@ -149,6 +150,7 @@ import api from '../api/ApiInstance';
 import { useToast } from "primevue/usetoast";
 
 
+let toast = useToast();
 let submitted = ref(false);
 let loading = ref(false);
 
@@ -171,9 +173,6 @@ const getAllSituacoes = async () => {
     }
 };
 
-let toast = useToast();
-
-
 // *** CADASTRO E EDIÇÃO ***
 
 let situacao = ref({});
@@ -183,20 +182,16 @@ const editSituacao = (obj) => {
     situacaoDialog.value = true;
 };
 
-
 const openNewDialog = async () => {
     situacao.value = {};
     submitted.value = false;
     situacaoDialog.value = true;
 };
 
-
-
 const closeNewDialog = async () => {
     situacaoDialog.value = false;
     submitted.value = false;
 };
-
 
 const salvar = async () => {
     submitted.value = true;
@@ -317,7 +312,7 @@ const deleteSituacao = async () => {
     }
 };
 
-// Vários selecionado
+// Vários selecionados
 const deleteSelectedSituacoes = async () => {
     try {
         loading.value = true;
