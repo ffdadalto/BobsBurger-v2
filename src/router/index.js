@@ -6,6 +6,8 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', name: 'Home', component: Home },
+    { path: '/Home', redirect: '/' },
+    
     { path: '/Pedido', name: 'Pedido', component: () => import('@/views/Pedido.vue') },
     { path: '/Item', name: 'Item', component: () => import('@/views/Item.vue') },
     { path: '/Situacao', name: 'Situacao', component: () => import('@/views/Situacao.vue') },

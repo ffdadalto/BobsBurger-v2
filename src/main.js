@@ -38,7 +38,7 @@ app.use(router)
 app.use(PrimeVue);
 app.use(ToastService);
 
-app.component('Titulo', Titulo);
+ app.component('Titulo', Titulo); // Registrando o componente globalmente
 
 app.component('Dialog', Dialog);
 app.component('Button', Button);

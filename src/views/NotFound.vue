@@ -12,7 +12,7 @@
             <i class="pi pi-ban not-found-icon"></i>
         </div>
         <p class="text-center">
-            <router-link to="/" class="text-decoration-none fw-bold">Voltar para a pagina principal</router-link>
+            <router-link to="/Home" class="text-decoration-none fw-bold">Voltar para a pagina principal</router-link>
         </p>
     </div>
 </template>
