@@ -1,5 +1,5 @@
 <template>
-    <h1 class="mb-1">{{ msg }}</h1>
+    <h1 class="mb-1 text-capitalize">{{ msg }}</h1>
     <hr class="mx-0 mt-1 mb-3">
 </template>
 
