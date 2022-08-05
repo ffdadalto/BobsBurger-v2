@@ -28,6 +28,7 @@ import InputText from 'primevue/inputtext';
 import ColorPicker from 'primevue/colorpicker';
 import Tooltip from 'primevue/tooltip';
 import Toast from 'primevue/toast';
+import AutoComplete from 'primevue/autocomplete';
 
 
 
@@ -49,6 +50,7 @@ app.component('RadioButton', RadioButton);
 app.component('InputText', InputText);
 app.component('ColorPicker', ColorPicker);
 app.component('Toast', Toast);
+app.component('AutoComplete', AutoComplete);
 
 app.directive('tooltip', Tooltip);
 

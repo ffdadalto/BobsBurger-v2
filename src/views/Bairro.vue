@@ -67,31 +67,35 @@
                 </div>
             </template>
 
-            <Dialog v-model:visible="objDialog" :style="{ width: '550px' }" header="Cadastro de Situações"
+            <Dialog v-model:visible="objDialog" :style="{ width: '550px' }" :header="`Cadastro de ${objSingular}`"
                 :modal="true" class="p-fluid">
                 <div class="row">
                     <div class="field col-6">
                         <label>Nome</label>
-                        <InputText v-model.trim="situacao.nome" required="true" autofocus :class="{
-                            'p-invalid': submitted && !situacao.nome,
+                        <InputText v-model.trim="obj.nome" required="true" autofocus :class="{
+                            'p-invalid': submitted && !obj.nome,
                         }" />
-                        <small class="p-error" v-if="submitted && !situacao.nome">Campo Obrigatório.</small>
+                        <small class="p-error" v-if="submitted && !obj.nome">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-6">
-                        <label style="display: block">Cor</label>
-                        <ColorPicker v-model.trim="situacao.cor" :inline="true" required="true" :class="{
-                            'p-invalid': submitted && !situacao.cor,
-                        }" />
-                        <small class="p-error" v-if="submitted && !situacao.cor">Campo Obrigatório.</small>
+                        <label>Cidade</label>
+                        <AutoComplete v-model="cidadeSelecionada" :suggestions="listaCidadeFiltrada"
+                            @complete="procurarCidade($event)" placeholder="Selecione uma cidade" :dropdown="true" field="nome"
+                            forceSelection >
+                            <!-- <template #item="slotProps">
+                                <div>{{ slotProps.item.nome }}</div>
+                            </template> -->
+                        </AutoComplete>
+                        <small class="p-error" v-if="submitted && !obj.nome">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-6">
                         <label class="mb-3">Situação</label>
                         <div class="field-radiobutton col-4">
-                            <RadioButton id="ativo" name="situacao" :value="true" v-model="situacao.ativo" />
+                            <RadioButton id="ativo" :name="objSingular" :value="true" v-model="obj.ativo" />
                             <label>Ativo</label>
                         </div>
                         <div class="field-radiobutton col-6">
-                            <RadioButton id="inativo" name="situacao" :value="false" v-model="situacao.ativo" />
+                            <RadioButton id="inativo" :name="objSingular" :value="false" v-model="obj.ativo" />
                             <label>Inativo</label>
                         </div>
                     </div>
@@ -107,8 +111,8 @@
             <Dialog v-model:visible="deleteObjDialog" :style="{ width: '450px' }" header="Confirmação" :modal="true">
                 <div class="confirmation-content">
                     <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                    <span v-if="situacao">{{ `Você tem certeza que deseja apagar a ${objSingular}` }}
-                        <b>{{ situacao.nome }}</b>?</span>
+                    <span v-if="obj">{{ `Você tem certeza que deseja apagar a ${objSingular}` }}
+                        <b>{{ obj.nome }}</b>?</span>
                 </div>
                 <template #footer>
                     <Button label="Não" icon="pi pi-times" class="p-button-text" @click="deleteObjDialog = false" />
@@ -120,12 +124,11 @@
             <Dialog v-model:visible="deleteObjsDialog" :style="{ width: '450px' }" header="Confirmação" :modal="true">
                 <div class="confirmation-content">
                     <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                    <span v-if="situacao">{{ `Você tem certeza que deseja apagar os ${objSingular}
+                    <span v-if="obj">{{ `Você tem certeza que deseja apagar as ${objPlural}
                     selecionadas?`}}</span>
                 </div>
                 <template #footer>
-                    <Button label="Não" icon="pi pi-times" class="p-button-text"
-                        @click="deleteObjsDialog = false" />
+                    <Button label="Não" icon="pi pi-times" class="p-button-text" @click="deleteObjsDialog = false" />
                     <Button label="Sim" icon="pi pi-check" class="p-button-text" @click="deleteSelectedObjs" />
                 </template>
             </Dialog>
@@ -148,7 +151,7 @@ const objSingular = ref('bairro');
 const objPlural = ref('bairros');
 
 onMounted(() => {
-    getAll();
+    getAll();    
 });
 
 let listaFitrada = ref([]);
@@ -166,12 +169,16 @@ const getAll = async () => {
     }
 };
 
+let listaCidadeOriginal = ref([]);
+let listaCidadeFiltrada = ref([]);
+let cidadeSelecionada = ref();
+
 // *** CADASTRO E EDIÇÃO ***
 
 let obj = ref({});
 let objDialog = ref(false);
-const editObj = (obj) => {
-    obj.value = obj;
+const editObj = (objeto) => {
+    obj.value = objeto;
     objDialog.value = true;
 };
 
@@ -179,6 +186,7 @@ const openNewDialog = async () => {
     obj.value = {};
     submitted.value = false;
     objDialog.value = true;
+    await getAllCidades();
 };
 
 const closeNewDialog = async () => {
@@ -186,13 +194,41 @@ const closeNewDialog = async () => {
     submitted.value = false;
 };
 
+const getAllCidades = async () => {
+    try {
+        loading.value = true;
+        const response = await api.get("/cidade");
+        listaCidadeOriginal.value = response.data.filter(c => c.ativo); // Tráz a lista somente das cidades ativas.        
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loading.value = false;
+    }
+};
+
+const procurarCidade = (event) => {
+    setTimeout(() => {
+        if (!event.query.trim().length) {
+            listaCidadeFiltrada.value = [...listaCidadeOriginal.value];
+        }
+        else {
+            listaCidadeFiltrada.value = listaCidadeOriginal.value.filter((c) => {
+                return c.nome.toLowerCase().startsWith(event.query.toLowerCase());
+            });
+        }
+    }, 250);
+};
+
 const salvar = async () => {
     submitted.value = true;
-    if (obj.value.nome.trim() && obj.value.cor) {
+    if (obj.value.nome.trim()) {
         if (obj.value.id) {
             // Caso o objeto vier com um id é edição, caso não vier, é cadastro.
             try {
                 loading.value = true;
+
+                obj.value.cidadeId = cidadeSelecionada.value.id; // Liga a cidade escolhia ao Bairro
+
                 const response = await api.put(`/${objSingular.value}/${obj.value.id}`, obj.value);
                 obj.value = response.data
 
@@ -223,6 +259,9 @@ const salvar = async () => {
             // Cadastro
             try {
                 loading.value = true;
+
+                obj.value.cidadeId = cidadeSelecionada.value.id; // Liga a cidade escolhia ao Bairro
+
                 const response = await api.post(`/${objSingular.value}`, obj.value);
                 obj.value = response.data
 
