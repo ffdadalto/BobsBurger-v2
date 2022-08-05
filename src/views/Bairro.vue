@@ -111,7 +111,7 @@
             <Dialog v-model:visible="deleteObjDialog" :style="{ width: '450px' }" header="Confirmação" :modal="true">
                 <div class="confirmation-content">
                     <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                    <span v-if="obj">{{ `Você tem certeza que deseja apagar a ${objSingular}` }}
+                    <span v-if="obj">{{ `Você tem certeza que deseja apagar o ${objSingular}` }}
                         <b>{{ obj.nome }}</b>?</span>
                 </div>
                 <template #footer>
@@ -306,8 +306,8 @@ const confirmDeleteSelected = () => {
     else deleteObjsDialog.value = true; // Abre o pop up de deleção de varias Situações
 };
 
-const confirmDeleteObj = (obj) => {
-    obj.value = obj;
+const confirmDeleteObj = (objeto) => {
+    obj.value = objeto;
     deleteObjDialog.value = true;
 };
 
