@@ -129,7 +129,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import api from '../api/ApiInstance';
+import api from '@/api/ApiInstance';
 import capitalize from '@/Utils/UtilsInstance';
 import { useToast } from "primevue/usetoast";
 
@@ -141,7 +141,7 @@ const objSingular = ref('cidade');
 const objPlural = ref('cidades');
 
 onMounted(() => {
-    getAll();
+    getAll();    
 });
 
 let listaFitrada = ref([]);

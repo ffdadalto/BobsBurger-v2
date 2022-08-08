@@ -146,7 +146,7 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import api from '../api/ApiInstance';
+import api from '@/api/ApiInstance';
 import { useToast } from "primevue/usetoast";
 
 

@@ -1,15 +1,21 @@
 import axios from 'axios'
 
+let urlbase = '';
+switch (import.meta.env.MODE) { // Verifica se é modo de produção ou desenvolvimento
+    case 'development':
+        urlbase = 'https://localhost:7060';
+        break;
+    case 'production':
+        urlbase = 'http://www.dadaltocorp.local:3000/';
+        break;
+    default:
+        urlbase = 'https://localhost:7060';
+        break;
+}
+
 const api = axios.create({
     withCredentials: false,
-    baseURL: 'https://localhost:7060', // Definindo a url base
+    baseURL: urlbase, // Definindo a url base
 });
-
-// // Ambiente de Testes
-// const api = axios.create({
-//     withCredentials: false,
-//     baseURL: 'http://www.dadaltocorp.local:3000/', // Definindo a url base
-// });
-
 
 export default api;
