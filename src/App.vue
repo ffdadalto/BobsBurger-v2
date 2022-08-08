@@ -38,4 +38,8 @@ import Rodape from '@/components/Rodape.vue'
     opacity: 0;
     transform: translateX(-2%);
 }
+
+header{
+    z-index: -1;
+}
 </style>

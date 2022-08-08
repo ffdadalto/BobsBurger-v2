@@ -80,8 +80,8 @@
                     <div class="field col-6">
                         <label>Cidade</label>
                         <AutoComplete v-model="cidadeSelecionada" :suggestions="listaCidadeFiltrada"
-                            @complete="procurarCidade($event)" placeholder="Selecione uma cidade" :dropdown="true" field="nome"
-                            forceSelection >
+                            @complete="procurarCidade($event)" placeholder="Selecione uma cidade" :dropdown="true"
+                            field="nome" forceSelection>
                             <!-- <template #item="slotProps">
                                 <div>{{ slotProps.item.nome }}</div>
                             </template> -->
@@ -124,8 +124,8 @@
             <Dialog v-model:visible="deleteObjsDialog" :style="{ width: '450px' }" header="Confirmação" :modal="true">
                 <div class="confirmation-content">
                     <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                    <span v-if="obj">{{ `Você tem certeza que deseja apagar as ${objPlural}
-                    selecionadas?`}}</span>
+                    <span v-if="obj">{{ `Você tem certeza que deseja apagar os ${objPlural}
+                    selecionados?`}}</span>
                 </div>
                 <template #footer>
                     <Button label="Não" icon="pi pi-times" class="p-button-text" @click="deleteObjsDialog = false" />
@@ -140,7 +140,8 @@
 
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import api from '../api/ApiInstance';
+import api from '@/api/ApiInstance';
+import capitalize from '@/Utils/UtilsInstance';
 import { useToast } from "primevue/usetoast";
 
 
@@ -151,7 +152,7 @@ const objSingular = ref('bairro');
 const objPlural = ref('bairros');
 
 onMounted(() => {
-    getAll();    
+    getAll();
 });
 
 let listaFitrada = ref([]);
@@ -163,7 +164,12 @@ const getAll = async () => {
         listaOriginal.value = response.data;
         filtrar();
     } catch (error) {
-        console.error(error);
+        toast.add({
+            severity: "error",
+            summary: "Erro",
+            detail: `Não foi possivel carregar a lista de ${objPlural.value}. Erro: ${error}`,
+            life: 5000,
+        });
     } finally {
         loading.value = false;
     }
@@ -177,9 +183,15 @@ let cidadeSelecionada = ref();
 
 let obj = ref({});
 let objDialog = ref(false);
-const editObj = (objeto) => {
-    obj.value = objeto;
-    objDialog.value = true;
+const editObj = async (objeto) => {
+    try {
+        await getAllCidades();
+        obj.value = objeto;
+        cidadeSelecionada.value = listaCidadeOriginal.value.find(c => c.id == obj.value.cidadeId);
+        objDialog.value = true;
+    } catch (error) {
+        objDialog.value = false;
+    }
 };
 
 const openNewDialog = async () => {
@@ -200,7 +212,12 @@ const getAllCidades = async () => {
         const response = await api.get("/cidade");
         listaCidadeOriginal.value = response.data.filter(c => c.ativo); // Tráz a lista somente das cidades ativas.        
     } catch (error) {
-        console.error(error);
+        toast.add({
+            severity: "error",
+            summary: "Erro",
+            detail: `Não foi possível carregar a lista de cidades. Erro: ${error}`,
+            life: 5000,
+        });
     } finally {
         loading.value = false;
     }
@@ -235,7 +252,7 @@ const salvar = async () => {
                 toast.add({
                     severity: "success",
                     summary: "Sucesso",
-                    detail: `${objSingular.value} ${obj.value.nome} atualizada com sucesso`,
+                    detail: `${capitalize(objSingular.value)} ${obj.value.nome} foi atualizado com sucesso`,
                     life: 5000,
                 });
 
@@ -249,7 +266,7 @@ const salvar = async () => {
                 toast.add({
                     severity: "error",
                     summary: "Erro",
-                    detail: `Não foi possível atualizar a ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
+                    detail: `Não foi possível atualizar o ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
                     life: 5000,
                 });
             } finally {
@@ -268,12 +285,13 @@ const salvar = async () => {
                 toast.add({
                     severity: "success",
                     summary: "Sucesso",
-                    detail: `${objSingular.value} ${obj.value.nome} cadastrada com sucesso`,
+                    detail: `${capitalize(objSingular.value)} ${obj.value.nome} foi cadastrado com sucesso`,
                     life: 5000,
                 });
 
                 objDialog.value = false; // Fecha o pop up
                 obj.value = {}; // Limpa o objeto
+                cidadeSelecionada.value = null; // Limpa o objeto
 
                 getAll(); // Refresh na lista
                 filtrar(); // Verifica se tem filtro ativo   
@@ -283,7 +301,7 @@ const salvar = async () => {
                 toast.add({
                     severity: "error",
                     summary: "Erro no cadastro",
-                    detail: `Não foi possível cadastrar a ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
+                    detail: `Não foi possível cadastrar o ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
                     life: 5000,
                 });
             } finally {
@@ -320,7 +338,7 @@ const deleteObj = async () => {
         toast.add({
             severity: "success",
             summary: "Sucesso",
-            detail: `${objSingular.value}  ${obj.value.nome} excluído do sistema`,
+            detail: `${capitalize(objSingular.value)}  ${obj.value.nome} foi excluído do sistema.`,
             life: 5000,
         });
 
@@ -336,7 +354,7 @@ const deleteObj = async () => {
         toast.add({
             severity: "error",
             summary: "Erro no cadastro",
-            detail: `Não foi possível cadastrar a ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
+            detail: `Não foi possível excluir o ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
             life: 5000,
         });
     } finally {
@@ -354,12 +372,12 @@ const deleteSelectedObjs = async () => {
         objIds.value = selectedObjs.value.map(s => s.id);
 
         // Chama o delete passando o array de Ids
-        const response = await api.delete(`/${objPlural.value}`, { data: objIds.value });
+        await api.delete(`/${objPlural.value}`, { data: objIds.value });
 
         toast.add({
             severity: "success",
             summary: "Sucesso",
-            detail: `${objPlural.value} excluídas do sistema`,
+            detail: `Os ${objPlural.value} selecionados foram excluídos do sistema.`,
             life: 5000,
         });
 
@@ -373,7 +391,7 @@ const deleteSelectedObjs = async () => {
         toast.add({
             severity: "error",
             summary: "Erro",
-            detail: `Não foi possível excluir as ${objPlural.value}. Erro: ${error}`,
+            detail: `Não foi possível excluir os ${objPlural.value} selecionados. Erro: ${error}`,
             life: 5000,
         });
     } finally {

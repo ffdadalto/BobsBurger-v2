@@ -130,6 +130,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import api from '../api/ApiInstance';
+import capitalize from '@/Utils/UtilsInstance';
 import { useToast } from "primevue/usetoast";
 
 
@@ -152,7 +153,12 @@ const getAll = async () => {
         listaOriginal.value = response.data;
         filtrar();
     } catch (error) {
-        console.error(error);
+        toast.add({
+            severity: "error",
+            summary: "Erro",
+            detail: `Não foi possivel carregar a lista de ${objPlural.value}. Erro: ${error}`,
+            life: 5000,
+        });
     } finally {
         loading.value = false;
     }
@@ -191,7 +197,7 @@ const salvar = async () => {
                 toast.add({
                     severity: "success",
                     summary: "Sucesso",
-                    detail: `${objSingular.value} ${obj.value.nome} atualizada com sucesso`,
+                    detail: `${capitalize(objSingular.value)} ${obj.value.nome} foi atualizada com sucesso`,
                     life: 5000,
                 });
 
@@ -221,7 +227,7 @@ const salvar = async () => {
                 toast.add({
                     severity: "success",
                     summary: "Sucesso",
-                    detail: `${objSingular.value} ${obj.value.nome} cadastrada com sucesso`,
+                    detail: `${capitalize(objSingular.value)} ${obj.value.nome} foi cadastrada com sucesso`,
                     life: 5000,
                 });
 
@@ -259,8 +265,8 @@ const confirmDeleteSelected = () => {
     else deleteObjsDialog.value = true; // Abre o pop up de deleção de varias Situações
 };
 
-const confirmDeleteObj = (obj) => {
-    obj.value = obj;
+const confirmDeleteObj = (objeto) => {
+    obj.value = objeto;
     deleteObjDialog.value = true;
 };
 
@@ -273,7 +279,7 @@ const deleteObj = async () => {
         toast.add({
             severity: "success",
             summary: "Sucesso",
-            detail: `${objSingular.value}  ${obj.value.nome} excluído do sistema`,
+            detail: `${capitalize(objSingular.value)}  ${obj.value.nome} foi excluída do sistema`,
             life: 5000,
         });
 
@@ -289,7 +295,7 @@ const deleteObj = async () => {
         toast.add({
             severity: "error",
             summary: "Erro no cadastro",
-            detail: `Não foi possível cadastrar a ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
+            detail: `Não foi possível excluir a ${objSingular.value} ${obj.value.nome}. Erro: ${error}`,
             life: 5000,
         });
     } finally {
@@ -312,7 +318,7 @@ const deleteSelectedObjs = async () => {
         toast.add({
             severity: "success",
             summary: "Sucesso",
-            detail: `${objPlural.value} excluídas do sistema`,
+            detail: `As ${objPlural.value} selecionadas foram excluídas do sistema.`,
             life: 5000,
         });
 
@@ -326,7 +332,7 @@ const deleteSelectedObjs = async () => {
         toast.add({
             severity: "error",
             summary: "Erro",
-            detail: `Não foi possível excluir as ${objPlural.value}. Erro: ${error}`,
+            detail: `Não foi possível excluir as ${objPlural.value} selecionadas. Erro: ${error}`,
             life: 5000,
         });
     } finally {
