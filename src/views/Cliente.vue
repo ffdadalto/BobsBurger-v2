@@ -83,37 +83,40 @@
                     </div>
                     <div class="field col-4">
                         <label>Apelido</label>
-                        <InputText v-model.trim="obj.apelido" required="true" autofocus :class="{
+                        <InputText v-model.trim="obj.apelido" required="true" :class="{
                             'p-invalid': submitted && !obj.apelido,
                         }" />
                         <small class="p-error" v-if="submitted && !obj.apelido">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-4">
                         <label>Telefone</label>
-                        <InputText v-model.trim="obj.telefone" required="true" autofocus :class="{
-                            'p-invalid': submitted && !obj.telefone,
-                        }" />
+                        <InputMask mask="(99) 99999-9999" v-model.trim="obj.telefone" required="true"
+                            placeholder="(99) 99999-9999" :class="{
+                                'p-invalid': submitted && !obj.telefone,
+                            }" />
                         <small class="p-error" v-if="submitted && !obj.telefone">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-3">
                         <label>CEP</label>
-                        <InputText v-model.trim="obj.cep" required="true" autofocus :class="{
-                            'p-invalid': submitted && !obj.cep,
-                        }" />
+                        <InputMask mask="99999-999" v-model.trim="obj.cep" required="true" placeholder="99999-999"
+                            :class="{
+                                'p-invalid': submitted && !obj.cep,
+                            }" />
                         <small class="p-error" v-if="submitted && !obj.cep">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-5">
                         <label>Endereço</label>
-                        <InputText v-model.trim="obj.endereco" required="true" autofocus :class="{
+                        <InputText v-model.trim="obj.endereco" required="true" :class="{
                             'p-invalid': submitted && !obj.endereco,
                         }" />
                         <small class="p-error" v-if="submitted && !obj.endereco">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-4">
-                        <label>Número</label>
-                        <InputText v-model.trim="obj.numero" required="true" autofocus :class="{
-                            'p-invalid': submitted && !obj.numero,
-                        }" />
+                        <label for="numero">Número</label>
+                        <InputNumber id="numero" v-model="obj.numero" mode="decimal" :useGrouping="false" integeronly
+                            required="true" :class="{
+                                'p-invalid': submitted && !obj.numero,
+                            }" />
                         <small class="p-error" v-if="submitted && !obj.numero">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-8">
@@ -237,6 +240,8 @@ const openNewDialog = async () => {
     obj.value = {};
     submitted.value = false;
     objDialog.value = true;
+    obj.value = {}; // Limpa o objeto
+    bairroSelecionado.value = '';
     await getAllBairros();
 };
 
@@ -284,6 +289,7 @@ const salvar = async () => {
                 loading.value = true;
 
                 obj.value.bairroId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
+                obj.value.numero = '' + obj.value.numero; // Improviso Tecnico
 
                 const response = await api.put(`/${objSingular.value}/${obj.value.id}`, obj.value);
                 obj.value = response.data
@@ -317,6 +323,7 @@ const salvar = async () => {
                 loading.value = true;
 
                 obj.value.bairroId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
+                obj.value.numero = '' + obj.value.numero; // Improviso Tecnico
 
                 const response = await api.post(`/${objSingular.value}`, obj.value);
                 obj.value = response.data

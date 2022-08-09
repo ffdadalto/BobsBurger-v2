@@ -29,6 +29,8 @@ import ColorPicker from 'primevue/colorpicker';
 import Tooltip from 'primevue/tooltip';
 import Toast from 'primevue/toast';
 import AutoComplete from 'primevue/autocomplete';
+import InputMask from 'primevue/inputmask';
+import InputNumber from 'primevue/inputnumber';
 
 
 
@@ -39,7 +41,7 @@ app.use(router)
 app.use(PrimeVue);
 app.use(ToastService);
 
- app.component('Titulo', Titulo); // Registrando o componente globalmente
+app.component('Titulo', Titulo); // Registrando o componente globalmente
 
 app.component('Dialog', Dialog);
 app.component('Button', Button);
@@ -51,6 +53,8 @@ app.component('InputText', InputText);
 app.component('ColorPicker', ColorPicker);
 app.component('Toast', Toast);
 app.component('AutoComplete', AutoComplete);
+app.component('InputMask', InputMask);
+app.component('InputNumber', InputNumber);
 
 app.directive('tooltip', Tooltip);
 
