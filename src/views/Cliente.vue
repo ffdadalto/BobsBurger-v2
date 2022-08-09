@@ -36,6 +36,7 @@
                     <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
                     <Column field="id" header="Id" :sortable="true" style="min-width:2rem"></Column>
                     <Column field="nome" header="Nome" :sortable="true" style="min-width:9rem"></Column>
+                    <Column field="apelido" header="Apelido" :sortable="true" style="min-width:5rem"></Column>
                     <Column field="telefone" header="Telefone" :sortable="true" style="min-width:4rem"></Column>
                     <Column field="endereco" header="Endereço" :sortable="true" style="min-width:10rem"></Column>
                     <Column field="numero" header="N⁰" :sortable="true" style="min-width:3rem"></Column>
@@ -73,18 +74,53 @@
             <Dialog v-model:visible="objDialog" :style="{ width: '550px' }" :header="`Cadastro de ${objSingular}`"
                 :modal="true" class="p-fluid">
                 <div class="row">
-                    <div class="field col-6">
+                    <div class="field col-8">
                         <label>Nome</label>
                         <InputText v-model.trim="obj.nome" required="true" autofocus :class="{
                             'p-invalid': submitted && !obj.nome,
                         }" />
                         <small class="p-error" v-if="submitted && !obj.nome">Campo Obrigatório.</small>
                     </div>
-                    <div class="field col-6">
-                        <label>Cidade</label>
+                    <div class="field col-4">
+                        <label>Apelido</label>
+                        <InputText v-model.trim="obj.apelido" required="true" autofocus :class="{
+                            'p-invalid': submitted && !obj.apelido,
+                        }" />
+                        <small class="p-error" v-if="submitted && !obj.apelido">Campo Obrigatório.</small>
+                    </div>
+                    <div class="field col-4">
+                        <label>Telefone</label>
+                        <InputText v-model.trim="obj.telefone" required="true" autofocus :class="{
+                            'p-invalid': submitted && !obj.telefone,
+                        }" />
+                        <small class="p-error" v-if="submitted && !obj.telefone">Campo Obrigatório.</small>
+                    </div>
+                    <div class="field col-3">
+                        <label>CEP</label>
+                        <InputText v-model.trim="obj.cep" required="true" autofocus :class="{
+                            'p-invalid': submitted && !obj.cep,
+                        }" />
+                        <small class="p-error" v-if="submitted && !obj.cep">Campo Obrigatório.</small>
+                    </div>
+                    <div class="field col-5">
+                        <label>Endereço</label>
+                        <InputText v-model.trim="obj.endereco" required="true" autofocus :class="{
+                            'p-invalid': submitted && !obj.endereco,
+                        }" />
+                        <small class="p-error" v-if="submitted && !obj.endereco">Campo Obrigatório.</small>
+                    </div>
+                    <div class="field col-4">
+                        <label>Número</label>
+                        <InputText v-model.trim="obj.numero" required="true" autofocus :class="{
+                            'p-invalid': submitted && !obj.numero,
+                        }" />
+                        <small class="p-error" v-if="submitted && !obj.numero">Campo Obrigatório.</small>
+                    </div>
+                    <div class="field col-8">
+                        <label>Bairro</label>
                         <AutoComplete v-model="bairroSelecionado" :suggestions="listaBairroFiltrada"
-                            @complete="procurarBairro($event)" :placeholder="`Selecione um ${objSingular}`"
-                            :dropdown="true" field="nome" forceSelection>
+                            @complete="procurarBairro($event)" placeholder='Selecione um bairro' :dropdown="true"
+                            field="nome" forceSelection>
                             <!-- <template #item="slotProps">
                                 <div>{{ slotProps.item.nome }}</div>
                             </template> -->
@@ -144,7 +180,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import api from '@/api/ApiInstance';
-import capitalize from '@/Utils/UtilsInstance';
+import capitalize from '@/utils/utilsInstance';
 import { useToast } from "primevue/usetoast";
 
 
@@ -190,7 +226,7 @@ const editObj = async (objeto) => {
     try {
         await getAllBairros();
         obj.value = objeto;
-        bairroSelecionado.value = listaBairroOriginal.value.find(c => c.id == obj.value.cidadeId);
+        bairroSelecionado.value = listaBairroOriginal.value.find(c => c.id == obj.value.bairroId);
         objDialog.value = true;
     } catch (error) {
         objDialog.value = false;
@@ -247,7 +283,7 @@ const salvar = async () => {
             try {
                 loading.value = true;
 
-                obj.value.cidadeId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
+                obj.value.bairroId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
 
                 const response = await api.put(`/${objSingular.value}/${obj.value.id}`, obj.value);
                 obj.value = response.data
@@ -280,7 +316,7 @@ const salvar = async () => {
             try {
                 loading.value = true;
 
-                obj.value.cidadeId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
+                obj.value.bairroId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
 
                 const response = await api.post(`/${objSingular.value}`, obj.value);
                 obj.value = response.data
