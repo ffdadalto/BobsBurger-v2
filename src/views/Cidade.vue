@@ -62,7 +62,7 @@
                             d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
                     </svg>
                     <div>
-                        {{ `Nenhum ${objSingular} encontrado!` }}
+                        {{ `Nenhuma ${objSingular} encontrada!` }}
                     </div>
                 </div>
             </template>
@@ -128,11 +128,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import api from '@/api/ApiInstance';
 import capitalize from '@/utils/utilsInstance';
 import { useToast } from "primevue/usetoast";
-
 
 let toast = useToast();
 let submitted = ref(false);
@@ -140,12 +139,27 @@ let loading = ref(false);
 const objSingular = ref('cidade');
 const objPlural = ref('cidades');
 
-onMounted(() => {
-    getAll();
-});
-
 let listaFitrada = ref([]);
 let listaOriginal = ref([]);
+let listaBairros = ref([]);
+// let teste = reactive([
+//     { id: 1, nome: 'Neni' },
+//     { id: 2, nome: 'Isa' }
+// ]);
+
+onMounted(() => {
+    getAll();
+    getAllBairros();
+    // teste.map(element => {
+    //     element.idade = 20;
+    //     console.log(element)
+    // });
+    // listaOriginal.value.forEach(function (cidade, i) {
+    //     console.log(i + ' - ' + cidade);
+    //     // cidade.qtdBairros = listaBairros.value.filter(b => b.cidadeId == cidade.id).length;
+    // });
+});
+
 const getAll = async () => {
     try {
         loading.value = true;
@@ -157,6 +171,23 @@ const getAll = async () => {
             severity: "error",
             summary: "Erro",
             detail: `Não foi possivel carregar a lista de ${objPlural.value}. Erro: ${error}`,
+            life: 5000,
+        });
+    } finally {
+        loading.value = false;
+    }
+};
+
+const getAllBairros = async () => {
+    try {
+        loading.value = true;
+        const response = await api.get('/bairro');
+        listaBairros.value = response.data;
+    } catch (error) {
+        toast.add({
+            severity: "error",
+            summary: "Erro",
+            detail: `Não foi possivel carregar a lista de bairros. Erro: ${error}`,
             life: 5000,
         });
     } finally {

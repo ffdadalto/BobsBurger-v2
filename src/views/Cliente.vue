@@ -40,7 +40,7 @@
                     <Column field="telefone" header="Telefone" :sortable="true" style="min-width:4rem"></Column>
                     <Column field="endereco" header="Endereço" :sortable="true" style="min-width:10rem"></Column>
                     <Column field="numero" header="N⁰" :sortable="true" style="min-width:3rem"></Column>
-                    <Column field="nomeBairro" header="Bairro" :sortable="true" style="min-width:8rem"></Column>
+                    <Column field="bairro.nome" header="Bairro" :sortable="true" style="min-width:8rem"></Column>
                     <Column field="ativo" header="Ativo" style="min-width:4rem">
                         <template #body="{ data }">
                             <i class="pi pi-check-circle ativo" v-if="data.ativo"></i>
@@ -74,14 +74,14 @@
             <Dialog v-model:visible="objDialog" :style="{ width: '550px' }" :header="`Cadastro de ${objSingular}`"
                 :modal="true" class="p-fluid">
                 <div class="row">
-                    <div class="field col-8">
+                    <div class="field col-5">
                         <label>Nome</label>
                         <InputText v-model.trim="obj.nome" required="true" autofocus :class="{
                             'p-invalid': submitted && !obj.nome,
                         }" />
                         <small class="p-error" v-if="submitted && !obj.nome">Campo Obrigatório.</small>
                     </div>
-                    <div class="field col-4">
+                    <div class="field col-3">
                         <label>Apelido</label>
                         <InputText v-model.trim="obj.apelido" required="true" :class="{
                             'p-invalid': submitted && !obj.apelido,
@@ -104,14 +104,14 @@
                             }" />
                         <small class="p-error" v-if="submitted && !obj.cep">Campo Obrigatório.</small>
                     </div>
-                    <div class="field col-5">
+                    <div class="field col-7">
                         <label>Endereço</label>
                         <InputText v-model.trim="obj.endereco" required="true" :class="{
                             'p-invalid': submitted && !obj.endereco,
                         }" />
                         <small class="p-error" v-if="submitted && !obj.endereco">Campo Obrigatório.</small>
                     </div>
-                    <div class="field col-4">
+                    <div class="field col-2">
                         <label for="numero">Número</label>
                         <InputNumber id="numero" v-model="obj.numero" mode="decimal" :useGrouping="false" integeronly
                             required="true" :class="{
@@ -119,16 +119,21 @@
                             }" />
                         <small class="p-error" v-if="submitted && !obj.numero">Campo Obrigatório.</small>
                     </div>
-                    <div class="field col-8">
+                    <div class="field col-6">
+                        <label>Cidade</label>
+                        <AutoComplete v-model="cidadeSelecionada" :suggestions="listaCidadeFiltrada"
+                            @complete="procurarCidade($event)" placeholder='Selecione uma cidade' :dropdown="true"
+                            field="nome" forceSelection>
+                        </AutoComplete>
+                        <small class="p-error" v-if="submitted && !cidadeSelecionada">Campo Obrigatório.</small>
+                    </div>
+                    <div class="field col-6">
                         <label>Bairro</label>
                         <AutoComplete v-model="bairroSelecionado" :suggestions="listaBairroFiltrada"
                             @complete="procurarBairro($event)" placeholder='Selecione um bairro' :dropdown="true"
-                            field="nome" forceSelection>
-                            <!-- <template #item="slotProps">
-                                <div>{{ slotProps.item.nome }}</div>
-                            </template> -->
+                            field="nome" forceSelection :disabled="!cidadeSelecionada ?? null">
                         </AutoComplete>
-                        <small class="p-error" v-if="submitted && !obj.nome">Campo Obrigatório.</small>
+                        <small class="p-error" v-if="submitted && !bairroSelecionado">Campo Obrigatório.</small>
                     </div>
                     <div class="field col-6">
                         <label class="mb-3">Situação</label>
@@ -181,11 +186,10 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, watchEffect } from 'vue';
 import api from '@/api/ApiInstance';
 import capitalize from '@/utils/utilsInstance';
 import { useToast } from "primevue/usetoast";
-
 
 let toast = useToast();
 let submitted = ref(false);
@@ -221,6 +225,10 @@ let listaBairroOriginal = ref([]);
 let listaBairroFiltrada = ref([]);
 let bairroSelecionado = ref();
 
+let listaCidadeOriginal = ref([]);
+let listaCidadeFiltrada = ref([]);
+let cidadeSelecionada = ref();
+
 // *** CADASTRO E EDIÇÃO ***
 
 let obj = ref({});
@@ -240,9 +248,10 @@ const openNewDialog = async () => {
     obj.value = {};
     submitted.value = false;
     objDialog.value = true;
-    obj.value = {}; // Limpa o objeto
-    bairroSelecionado.value = '';
+    obj.value = {}; // Limpa o objeto  
+    cidadeSelecionada.value = ''; // Limpa o objeto  
     await getAllBairros();
+    await getAllCidades();
 };
 
 const closeNewDialog = async () => {
@@ -267,6 +276,23 @@ const getAllBairros = async () => {
     }
 };
 
+const getAllCidades = async () => {
+    try {
+        loading.value = true;
+        const response = await api.get("/cidade");
+        listaCidadeOriginal.value = response.data.filter(c => c.ativo); // Tráz a lista somente dass cidades ativas.        
+    } catch (error) {
+        toast.add({
+            severity: "error",
+            summary: "Erro",
+            detail: `Não foi possível carregar a lista de cidades. Erro: ${error}`,
+            life: 5000,
+        });
+    } finally {
+        loading.value = false;
+    }
+};
+
 const procurarBairro = (event) => {
     setTimeout(() => {
         if (!event.query.trim().length) {
@@ -279,6 +305,24 @@ const procurarBairro = (event) => {
         }
     }, 250);
 };
+
+const procurarCidade = (event) => {
+    setTimeout(() => {
+        if (!event.query.trim().length) {
+            listaCidadeFiltrada.value = [...listaCidadeOriginal.value];
+        }
+        else {
+            listaCidadeFiltrada.value = listaCidadeOriginal.value.filter((c) => {
+                return c.nome.toLowerCase().startsWith(event.query.toLowerCase());
+            });
+        }
+    }, 250);
+};
+
+watch(cidadeSelecionada, () => {
+    bairroSelecionado.value = null;
+    listaBairroOriginal.value = cidadeSelecionada.value.bairros;
+})
 
 const salvar = async () => {
     submitted.value = true;
@@ -322,8 +366,8 @@ const salvar = async () => {
             try {
                 loading.value = true;
 
-                obj.value.bairroId = bairroSelecionado.value.id; // Liga a cidade escolhia ao Bairro
-                obj.value.numero = '' + obj.value.numero; // Improviso Tecnico
+                obj.value.bairroId = bairroSelecionado.value.id; // Liga a cidade escolhida ao Bairro
+                obj.value.numero = '' + obj.value.numero; // Improviso Tecnico              
 
                 const response = await api.post(`/${objSingular.value}`, obj.value);
                 obj.value = response.data

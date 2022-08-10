@@ -36,7 +36,7 @@
                     <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
                     <Column field="id" header="Id" :sortable="true" style="min-width:4rem"></Column>
                     <Column field="nome" header="Nome" :sortable="true" style="min-width:10rem"></Column>
-                    <Column field="nomeCidade" header="Cidade" :sortable="true" style="min-width:8rem"></Column>
+                    <Column field="cidade.nome" header="Cidade" :sortable="true" style="min-width:8rem"></Column>
                     <Column field="qtdClientes" header="Qtd Clientes" :sortable="true" style="min-width:4rem"></Column>
                     <Column field="ativo" header="Ativo" style="min-width:8rem">
                         <template #body="{ data }">

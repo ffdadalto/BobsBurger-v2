@@ -1,13 +1,14 @@
+// Clientes
 [
-  '{{repeat(200)}}',
+  '{{repeat(2000)}}',
   {    
     Nome: '{{firstName()}} {{surname()}}', 
-    Apelido: '{{random("Max", "Zé", "Cabeça","Juca", "Juju", "Zito", "Burraldo", "Fiona", "Shrek")}}',
+    Apelido: '{{company()}}',
     Telefone: '{{phone()}}',  
     Cep : '{{integer(1000000, 9999999)}}',
     Endereco: '{{street()}}',  
     Numero: '{{integer(0, 5000)}}',
-    bairroId: '{{integer(12, 28)}}',
+    bairroId: '{{integer(1, 500)}}',
     Ativo: '{{bool()}}'
     
   }

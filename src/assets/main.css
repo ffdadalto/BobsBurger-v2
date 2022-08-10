@@ -1,7 +1,9 @@
 :root {
     --cor-header: #2f4550;
-    --cor-menu-pri: #586f7c;
-    --cor-menu-sec: #6894ad;
+    /* --cor-menu-pri: #586f7c;
+    --cor-menu-sec: #6894ad; */
+    --cor-menu-pri: #4c6c7c;
+    --cor-menu-sec: #4c6c7c;
     --cor-content: #f4f4f9;
     --cor-container: #fbfefb;
     --cor-rodape: #212f36;
