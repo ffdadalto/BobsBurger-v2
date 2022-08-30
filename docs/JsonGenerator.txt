@@ -13,3 +13,12 @@
     
   }
 ]
+
+// Cidades
+[
+  '{{repeat(2000)}}',
+  { 
+    Nome: '{{city()}}',
+    Ativo: '{{bool()}}'    
+  }
+]
